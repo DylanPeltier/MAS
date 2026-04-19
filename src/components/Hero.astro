@@ -1,0 +1,45 @@
+---
+import { Picture } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import heroImage from "../assets/home-appliance-png-5eqz2hm4hx833zgx.png";
+---
+
+<section
+	id="hero"
+	class="mas-scroll-section mx-auto grid w-full max-w-7xl gap-10 px-4 py-12 md:gap-12 md:px-6 md:py-16 lg:grid-cols-2 lg:items-center lg:gap-16"
+	aria-labelledby="hero-heading"
+>
+	<div class="min-w-0">
+		<h1
+			id="hero-heading"
+			class="text-4xl font-black leading-tight tracking-tight text-neutral-900 md:text-5xl lg:text-6xl"
+		>
+			Where Repairs Meet Reliability.
+		</h1>
+		<p class="mt-5 max-w-xl text-lg leading-relaxed text-neutral-600 md:text-xl">
+			Fast, dependable appliance services designed for your convenience.
+			We make sure your appliances are fixed right so your home keeps running smoothly.
+		</p>
+		<div class="mt-8">
+			<a href="#contact" class="mas-btn-primary-lg w-full sm:w-auto">
+				Get in touch
+				<Icon name="heroicons:arrow-long-right" aria-hidden="true" />
+			</a>
+		</div>
+	</div>
+	<div
+		class="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-2xl bg-transparent p-4 lg:min-h-[420px] lg:p-8"
+	>
+		<Picture
+			src={heroImage}
+			alt="A stainless-steel refrigerator, oven range with microwave, and front-loading washing machine"
+			class="h-full max-h-[320px] w-full max-w-full object-contain object-center lg:max-h-[440px]"
+			widths={[480, 768, 1024, 1440]}
+			sizes="(min-width: 1024px) 42vw, (min-width: 640px) 80vw, 92vw"
+			formats={["avif", "webp"]}
+			loading="eager"
+			decoding="async"
+			fetchpriority="high"
+		/>
+	</div>
+</section>

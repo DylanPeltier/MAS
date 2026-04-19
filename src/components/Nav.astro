@@ -1,0 +1,286 @@
+---
+import { Icon } from "astro-icon/components";
+import logotype from "../assets/logotype.svg";
+
+const links = [
+	{ name: "Home", href: "/#hero" },
+	{ name: "About us", href: "/#about" },
+	{ name: "Services", href: "/#services" },
+	{ name: "Reviews", href: "/#testimonials" },
+];
+---
+
+<nav
+	class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm"
+	aria-label="Primary"
+>
+	<div
+		class="mx-auto flex min-h-[64px] max-w-7xl items-center justify-between gap-2 px-4 md:px-6"
+	>
+		<div class="min-w-0 shrink-0">
+			<a href="/#hero" class="flex items-center no-underline">
+				<img
+					src={logotype.src}
+					alt="Malcolm's Appliance Service"
+					class="h-8 w-auto sm:h-9"
+					width={logotype.width}
+					height={logotype.height}
+				/>
+			</a>
+		</div>
+
+		<div class="flex min-w-0 shrink items-center justify-end gap-2 sm:gap-4 md:gap-8">
+			<div class="hidden items-center gap-6 md:flex md:gap-8">
+				{
+					links.map((link) => (
+						<a
+							href={link.href}
+							class="text-sm font-medium text-neutral-800 no-underline transition-colors hover:text-black"
+						>
+							{link.name}
+						</a>
+					))
+				}
+			</div>
+			<a
+				href="/#contact"
+				class="mas-btn-primary-nav min-h-10 max-w-full min-w-0 shrink sm:min-h-0"
+			>
+				<span class="min-w-0 truncate sm:whitespace-normal">
+					<span class="sm:hidden">Contact</span>
+					<span class="hidden sm:inline">Get in touch</span>
+				</span>
+				<Icon name="heroicons:arrow-long-right" aria-hidden="true" />
+			</a>
+			<button
+				type="button"
+				class="menu-toggle inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center rounded-lg border-none bg-transparent p-1.5 leading-none text-neutral-800 hover:bg-neutral-100 md:hidden"
+				aria-label="Open menu"
+				aria-expanded="false"
+				aria-controls="mobile-menu"
+			>
+				<Icon
+					name="heroicons:bars-3"
+					aria-hidden="true"
+					class="menu-icon-open h-6 w-6"
+				/>
+				<Icon
+					name="heroicons:x-mark"
+					aria-hidden="true"
+					class="menu-icon-close hidden h-6 w-6"
+				/>
+			</button>
+		</div>
+	</div>
+
+	<div
+		id="mobile-menu"
+		class="mobile-menu hidden flex-col gap-3 border-t border-neutral-100 bg-white px-4 py-4 max-md:[&.active]:flex md:hidden"
+	>
+		{
+			links.map((link) => (
+				<a
+					href={link.href}
+					class="nav-scroll-link py-1 text-base font-medium text-neutral-800 no-underline hover:text-black"
+				>
+					{link.name}
+				</a>
+			))
+		}
+		<a href="/#contact" class="mas-btn-primary-nav nav-scroll-link mt-1 w-full justify-center">
+			Get in touch
+			<Icon name="heroicons:arrow-long-right" aria-hidden="true" />
+		</a>
+	</div>
+</nav>
+
+<script>
+	const btn = document.querySelector(".menu-toggle");
+	const menu = document.querySelector(".mobile-menu");
+	const nav = document.querySelector("nav");
+
+	function closeMenu() {
+		menu?.classList.remove("active");
+		btn?.setAttribute("aria-expanded", "false");
+		btn?.setAttribute("aria-label", "Open menu");
+		btn?.querySelector(".menu-icon-open")?.classList.remove("hidden");
+		btn?.querySelector(".menu-icon-close")?.classList.add("hidden");
+	}
+
+	btn?.addEventListener("click", () => {
+		menu?.classList.toggle("active");
+		const open = !!menu?.classList.contains("active");
+		btn?.setAttribute("aria-expanded", open ? "true" : "false");
+		btn?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+		btn?.querySelector(".menu-icon-open")?.classList.toggle("hidden", open);
+		btn?.querySelector(".menu-icon-close")?.classList.toggle("hidden", !open);
+	});
+
+	document.querySelectorAll(".nav-scroll-link").forEach((el) => {
+		el.addEventListener("click", closeMenu);
+	});
+
+	/** Pixels to leave clear below sticky nav (matches visual overlap). */
+	function getNavOffset() {
+		const n = document.querySelector("nav");
+		if (!n) return 72;
+		return Math.round(n.getBoundingClientRect().height) + 6;
+	}
+
+	/** Current scroll position — read from whichever element the browser uses. */
+	function getScrollY() {
+		return (
+			window.scrollY ||
+			window.pageYOffset ||
+			document.documentElement.scrollTop ||
+			document.body.scrollTop ||
+			0
+		);
+	}
+
+	/**
+	 * Write the scroll position. We write to every plausible target so the
+	 * animation drives smoothly in Chrome, Firefox, and Safari regardless of
+	 * doc mode or the browser's own smooth-scroll preference
+	 * (e.g. Firefox's `general.smoothScroll`).
+	 */
+	function setScrollY(y: number) {
+		document.documentElement.scrollTop = y;
+		document.body.scrollTop = y;
+	}
+
+	/** Elevator-feel ease-in-out: slow start → accelerate → slow finish. */
+	function easeInOutCubic(t: number) {
+		return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+	}
+
+	let scrollAnimToken = 0;
+	/** Fixed durations — tune here if it should be slower/faster. */
+	const SCROLL_DURATION_MS = 700;
+	/**
+	 * Shorter duration used when the OS reports `prefers-reduced-motion: reduce`.
+	 * We still animate (this is a user-initiated, predictable vertical scroll
+	 * with no parallax or bounce) but keep it brief so users who asked for
+	 * less motion get noticeably less of it. Kept > 0 to avoid a jarring snap.
+	 */
+	const SCROLL_DURATION_REDUCED_MS = 200;
+
+	/**
+	 * Custom eased scroll. We fully own the animation: no CSS `scroll-behavior`,
+	 * no reliance on `window.scrollTo` (which some browsers re-route through
+	 * their own smooth-scroll), and no cancel-on-user-scroll.
+	 *
+	 * On `prefers-reduced-motion: reduce` we shorten the duration instead of
+	 * snapping, which respects the spirit of the preference while keeping the
+	 * product's signature eased scroll intact.
+	 */
+	function scrollDocumentToElement(el: HTMLElement) {
+		const startY = getScrollY();
+		const rect = el.getBoundingClientRect();
+		const targetY = Math.max(0, rect.top + startY - getNavOffset());
+		const distance = targetY - startY;
+
+		if (Math.abs(distance) < 2) {
+			setScrollY(targetY);
+			return;
+		}
+
+		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const duration = reduced ? SCROLL_DURATION_REDUCED_MS : SCROLL_DURATION_MS;
+
+		scrollAnimToken++;
+		const token = scrollAnimToken;
+		const t0 = performance.now();
+
+		function frame(now: number) {
+			if (token !== scrollAnimToken) return;
+			const elapsed = now - t0;
+			const t = Math.min(elapsed / duration, 1);
+			const eased = easeInOutCubic(t);
+			setScrollY(startY + distance * eased);
+			if (t < 1) {
+				requestAnimationFrame(frame);
+			} else {
+				setScrollY(targetY);
+			}
+		}
+
+		requestAnimationFrame(frame);
+	}
+
+	function scrollToSectionById(id: string) {
+		const el = document.getElementById(id);
+		if (!el) return false;
+		scrollDocumentToElement(el);
+		return true;
+	}
+
+	/**
+	 * Same-page hash links (e.g. /#about, #contact in hero): eased scroll + URL update.
+	 * Document-level so Hero/footer `#…` links get the same animation as nav.
+	 */
+	document.addEventListener("click", (e) => {
+		// Let the browser handle modifier-clicks / middle-clicks normally
+		// (new tab, new window, etc.) — those should never trigger our animation.
+		if (
+			e.defaultPrevented ||
+			e.button !== 0 ||
+			e.metaKey ||
+			e.ctrlKey ||
+			e.shiftKey ||
+			e.altKey
+		) {
+			return;
+		}
+		const target = e.target;
+		if (!(target instanceof Element)) return;
+		const a = target.closest("a[href]");
+		if (!a || a.getAttribute("target") === "_blank") return;
+		const href = a.getAttribute("href");
+		if (!href || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+
+		let id = "";
+
+		if (href.startsWith("#")) {
+			if (href === "#") return;
+			id = href.slice(1);
+		} else {
+			const hashIdx = href.indexOf("#");
+			if (hashIdx === -1) return;
+			let url: URL;
+			try {
+				url = new URL(href, window.location.origin);
+			} catch {
+				return;
+			}
+			const pathHere = window.location.pathname.replace(/\/$/, "") || "/";
+			const pathTarget = url.pathname.replace(/\/$/, "") || "/";
+			const samePath =
+				pathTarget === pathHere ||
+				(pathTarget === "/" && pathHere === "/index.html");
+			if (!samePath) return;
+			id = url.hash.slice(1);
+		}
+
+		if (!id || !document.getElementById(id)) return;
+
+		e.preventDefault();
+		scrollToSectionById(id);
+		if (href.startsWith("#")) {
+			history.pushState(null, "", href);
+		} else {
+			const url = new URL(href, window.location.origin);
+			history.pushState(null, "", url.pathname + url.hash);
+		}
+	});
+
+	/** Landing on /#section: smooth scroll after paint. */
+	function scrollIfHashInUrl() {
+		const id = window.location.hash.slice(1);
+		if (!id || !document.getElementById(id)) return;
+		requestAnimationFrame(() => {
+			scrollToSectionById(id);
+		});
+	}
+	scrollIfHashInUrl();
+</script>

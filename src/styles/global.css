@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+/*
+ * Intentionally NOT using `scroll-behavior: smooth` here.
+ * Anchor-link scrolling is handled by a custom eased animation in Nav.astro
+ * so we can control duration + easing. Enabling CSS smooth scroll alongside
+ * it causes the two animations to fight and makes jumps appear instant.
+ */
+
+/* Offset anchor targets below sticky nav */
+.mas-scroll-section {
+	scroll-margin-top: 5rem;
+}
+
+@media (min-width: 768px) {
+	.mas-scroll-section {
+		scroll-margin-top: 5.5rem;
+	}
+}
+
+/*
+ * Skip-to-content link: visually hidden until focused by keyboard users.
+ * Improves keyboard accessibility without affecting the visual design.
+ */
+.skip-link {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 0.75rem 1rem;
+	background: #171717;
+	color: #ffffff;
+	font-weight: 600;
+	text-decoration: none;
+	border-radius: 0 0 0.5rem 0;
+	transform: translateY(-150%);
+	transition: transform 0.2s ease;
+	z-index: 100;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+	transform: translateY(0);
+	outline: 3px solid #f97316;
+	outline-offset: 2px;
+}
+
+/*
+ * Consistent, visible keyboard focus ring across the site.
+ * Only shows for keyboard navigation (focus-visible), not mouse clicks.
+ */
+:focus-visible {
+	outline: 2px solid #f97316;
+	outline-offset: 2px;
+	border-radius: 0.25rem;
+}
+
+/* Scroll-in sections (respect reduced motion) */
+[data-reveal] {
+	opacity: 0;
+	transform: translateY(1.25rem);
+	transition:
+		opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+		transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-reveal],
+	[data-reveal].is-visible {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+@layer components {
+	.mas-btn-primary {
+		@apply inline-flex items-center justify-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-orange-600 sm:gap-2 sm:px-5 sm:py-2.5 sm:text-base;
+	}
+	.mas-btn-primary svg {
+		@apply h-4 w-4 shrink-0 text-white sm:h-5 sm:w-5;
+	}
+	/* Nav bar + mobile drawer — smaller type than default CTA */
+	.mas-btn-primary-nav {
+		@apply inline-flex items-center justify-center gap-1 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-orange-600 sm:gap-1.5 sm:px-4 sm:py-2 sm:text-sm;
+	}
+	.mas-btn-primary-nav svg {
+		@apply h-3.5 w-3.5 shrink-0 text-white sm:h-4 sm:w-4;
+	}
+	.mas-btn-primary-lg {
+		@apply inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-orange-600 sm:px-8 sm:py-3.5 sm:text-lg;
+	}
+	.mas-btn-primary-lg svg {
+		@apply h-5 w-5 shrink-0 text-white sm:h-6 sm:w-6;
+	}
+}

@@ -1,0 +1,158 @@
+---
+import { Icon } from "astro-icon/components";
+
+const address = {
+	line1: "29061 Bluewater Cres",
+	line2: "Wallaceburg, ON N8A 4K9",
+};
+const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+	`${address.line1}, ${address.line2}`,
+)}`;
+
+const googleReviewsHref =
+	"https://www.google.com/search?client=firefox-b-d&hs=VYjp&sca_esv=562b59745d56cfa4&sxsrf=ANbL-n6mkWB_oBCGWEiJ8GKzciGTE9T4cw:1776556016547&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOSNJwB7UqdrcgG6jmWTCwfs8vIc6JdNAqAjDXdHKwniyl49jSePR7fsXJdG6_JbC-zEeFj4qPVO_eXcDfxcChtn-b2YX2POpfDFmdPfRdI4xq_fPYA%3D%3D&q=Malcolm%E2%80%99s+Appliance+Service+Reviews&sa=X&ved=2ahUKEwjHx6jyyviTAxUqlisGHc8qA7QQ0bkNegQIQBAH";
+const facebookHref =
+	"https://www.facebook.com/p/Malcolms-Appliance-Service-61563738870870/";
+
+const quickLinks = [
+	{ name: "Home", href: "/#hero" },
+	{ name: "About us", href: "/#about" },
+	{ name: "Services", href: "/#services" },
+	{ name: "Reviews", href: "/#testimonials" },
+	{ name: "Contact", href: "/#contact" },
+];
+---
+
+<footer class="mt-auto w-full bg-neutral-900 text-neutral-300">
+	<div
+		class="mx-auto grid w-full max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 md:px-6 md:py-16 lg:grid-cols-5 lg:gap-8"
+	>
+		<div class="lg:col-span-2">
+			<p class="text-lg font-semibold text-white">Malcolm&apos;s Appliance Service</p>
+			<p class="mt-3 max-w-sm text-sm leading-relaxed text-neutral-400">
+				Honest, knowledgeable appliance repair serving Wallaceburg and the
+				surrounding area.
+			</p>
+
+			<div class="mt-6 flex items-center gap-3">
+				<a
+					href={googleReviewsHref}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="Read our Google Reviews"
+					class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-neutral-200 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+						class="h-5 w-5"
+						fill="currentColor"
+					>
+						<path
+							d="M12.48 10.92v2.96h5.04c-.2 1.32-1.56 3.88-5.04 3.88-3.04 0-5.52-2.52-5.52-5.64s2.48-5.64 5.52-5.64c1.72 0 2.88.72 3.54 1.36l2.42-2.34C17.44 4.26 15.28 3.2 12.48 3.2 7.56 3.2 3.6 7.16 3.6 12.08s3.96 8.88 8.88 8.88c5.12 0 8.52-3.6 8.52-8.68 0-.58-.06-1.02-.14-1.36h-8.38z"
+						></path>
+					</svg>
+				</a>
+				<a
+					href={facebookHref}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="Visit our Facebook page"
+					class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-neutral-200 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+						class="h-5 w-5"
+						fill="currentColor"
+					>
+						<path
+							d="M13.5 21.95v-7.53h2.53l.38-2.94H13.5V9.6c0-.85.24-1.43 1.46-1.43h1.56V5.54c-.27-.04-1.2-.12-2.28-.12-2.26 0-3.8 1.38-3.8 3.9v2.17H7.9v2.94h2.54v7.53h3.06z"
+						></path>
+					</svg>
+				</a>
+			</div>
+		</div>
+
+		<nav aria-labelledby="footer-explore-heading">
+			<h2
+				id="footer-explore-heading"
+				class="text-sm font-semibold tracking-wide text-white uppercase"
+			>
+				Explore
+			</h2>
+			<ul class="mt-4 space-y-2">
+				{
+					quickLinks.map((link) => (
+						<li>
+							<a
+								href={link.href}
+								class="text-sm text-neutral-300 no-underline transition-colors hover:text-white"
+							>
+								{link.name}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="lg:col-span-2">
+			<h2 class="text-sm font-semibold tracking-wide text-white uppercase">
+				Get in touch
+			</h2>
+			<address class="mt-4 space-y-3 text-sm not-italic">
+				<div class="flex items-start gap-2.5">
+					<Icon
+						name="heroicons:map-pin"
+						aria-hidden="true"
+						class="mt-0.5 h-4 w-4 shrink-0 text-orange-400"
+					/>
+					<a
+						href={mapsHref}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-neutral-300 no-underline transition-colors hover:text-white"
+					>
+						{address.line1}<br />{address.line2}
+					</a>
+				</div>
+				<div class="flex items-start gap-2.5">
+					<Icon
+						name="heroicons:phone"
+						aria-hidden="true"
+						class="mt-0.5 h-4 w-4 shrink-0 text-orange-400"
+					/>
+					<a
+						href="tel:+12268861889"
+						aria-label="Call 226-886-1889"
+						class="text-neutral-300 no-underline transition-colors hover:text-white"
+					>
+						226-886-1889
+					</a>
+				</div>
+				<div class="flex items-start gap-2.5">
+					<Icon
+						name="heroicons:envelope"
+						aria-hidden="true"
+						class="mt-0.5 h-4 w-4 shrink-0 text-orange-400"
+					/>
+					<a
+						href="mailto:malcolmsapplianceservice@gmail.com"
+						class="break-words text-neutral-300 no-underline transition-colors hover:text-white"
+					>
+						malcolmsapplianceservice@gmail.com
+					</a>
+				</div>
+			</address>
+		</div>
+	</div>
+
+	<div class="border-t border-white/10">
+		<div
+			class="mx-auto flex w-full max-w-7xl items-center justify-center px-4 py-5 text-xs text-neutral-500 md:px-6"
+		>
+			<p>Made by Dylan Peltier</p>
+		</div>
+	</div>
+</footer>

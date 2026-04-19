@@ -1,0 +1,92 @@
+---
+import Font from "astro/components/Font.astro";
+import ScrollAnimations from "../components/ScrollAnimations.astro";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Malcolm's Appliance Service | Appliance Repair in Wallaceburg, ON",
+	description = "Fast, honest appliance repair in Wallaceburg, Ontario. Malcolm repairs washers, dryers, dishwashers, ovens, ranges, and microwaves — same‑day service when possible. Call 226-886-1889.",
+} = Astro.props;
+
+const businessJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "LocalBusiness",
+	name: "Malcolm's Appliance Service",
+	image: new URL("/mas-favicon.svg", Astro.url).toString(),
+	description,
+	telephone: "+1-226-886-1889",
+	email: "malcolmsapplianceservice@gmail.com",
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: "29061 Bluewater Cres",
+		addressLocality: "Wallaceburg",
+		addressRegion: "ON",
+		postalCode: "N8A 4K9",
+		addressCountry: "CA",
+	},
+	areaServed: [
+		{ "@type": "City", name: "Wallaceburg" },
+		{ "@type": "City", name: "Chatham" },
+		{ "@type": "AdministrativeArea", name: "Chatham-Kent" },
+	],
+	sameAs: [
+		"https://www.facebook.com/p/Malcolms-Appliance-Service-61563738870870/",
+	],
+	knowsAbout: [
+		"Appliance repair",
+		"Washer repair",
+		"Dryer repair",
+		"Dishwasher repair",
+		"Oven repair",
+		"Range repair",
+		"Microwave repair",
+	],
+};
+---
+
+<!doctype html>
+<html lang="en-CA" class="h-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#f97316" />
+		<meta name="color-scheme" content="light" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Malcolm's Appliance Service" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:locale" content="en_CA" />
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<link rel="icon" type="image/svg+xml" href="/mas-favicon.svg" />
+		<link rel="apple-touch-icon" href="/mas-favicon.svg" />
+
+		<Font cssVariable="--font-inter" preload />
+
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify(businessJsonLd)}
+		/>
+	</head>
+	<body
+		class="box-border flex min-h-screen w-full flex-col items-stretch justify-start bg-white font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] text-neutral-900 antialiased"
+	>
+		<a href="#hero" class="skip-link">Skip to main content</a>
+		<slot />
+		<ScrollAnimations />
+	</body>
+</html>
